@@ -9,12 +9,14 @@ import './table.scss';
 import '../common/style.scss';
 
 import getData from './get-data';
+import sortData from './sort-data';
 
 let tableData;
 let tempTableData;
 let selectedTableRow;
 let selectedTableCell;
 let showConfirmingModalBoxAnswer;
+let lastId;
 
 const tableHTMLTag = document.registerElement('table-editor', {
   prototype: Object.create(HTMLElement.prototype)
@@ -72,10 +74,20 @@ export default class Table {
     this.addRowBtn = this.elem.querySelector('#add-row');
     this.addRowBtn.addEventListener('click', () => {
       if (selectedTableRow) {
-        const selectedTableRowId = selectedTableRow.querySelector('input[type="hidden"').value;
-        this.showConfirmingModalBox(selectedTableRowId);
+        const index = Array.prototype.indexOf.call(selectedTableRow.parentNode.children,
+          selectedTableRow);
+        this.showConfirmingModalBox(index - 1);
       } else {
         this.addEmptyRow();
+      }
+    });
+
+    // Delete row button
+    this.deleteRowBtn = this.elem.querySelector('#delete-row');
+    this.deleteRowBtn.addEventListener('click', () => {
+      if (selectedTableRow) {
+        const selectedRowId = selectedTableRow.firstElementChild.value;
+        this.deleteRow(selectedRowId);
       }
     });
 
@@ -97,6 +109,17 @@ export default class Table {
         }
       }
     }, true);
+
+    // Sorts data
+    this.sortDataBtns = this.elem.querySelectorAll('.table-header');
+    this.sortDataBtnsArray = Array.from(this.sortDataBtns);
+
+    this.sortDataBtnsArray.forEach((item) => {
+      item.addEventListener('click', () => {
+        const sortedData = sortData(tableData, item.id, item.dataset.sortState);
+        console.log(sortedData);
+      });
+    });
 
     // Highlights table row onclick
     document.body.addEventListener('click', (e) => {
@@ -126,6 +149,8 @@ export default class Table {
     tableRowsArray.forEach((item) => {
       tableRowsContainer.appendChild(item);
     });
+
+    lastId = tableRowsArray[tableRowsArray.length - 1].firstElementChild.value;
   }
 
   updateTableData(e) {
@@ -133,17 +158,24 @@ export default class Table {
     const newValue = e.target.firstChild.data;
     const field = e.target.getAttribute('data-field');
 
-    tableData[id][field] = newValue;
+    //tableData[id][field] = newValue;
+
+    for (let key in tableData) {
+      if (tableData[key].id === id) {
+        tableData[key][field] = newValue;
+        break;
+      }
+    }
   }
 
   addEmptyRow(options) {
+    lastId = +lastId + 1;
     const emptyRow = {
-      id: JSON.stringify(tableData.length),
+      id: JSON.stringify(lastId),
       name: ' ',
       age: ' ',
       city: ' '
     };
-
     if (options) {
       switch (options.pos) {
         case 'insert-before':
@@ -203,6 +235,26 @@ export default class Table {
         coverDiv.parentNode.removeChild(coverDiv);
       }
     });
+  }
+
+  deleteRow(id) {
+    let i = 0;
+
+    for (let key in tableData) {
+      if (tableData[key].id === id) {
+        break;
+      }
+      i += 1;
+    }
+
+    tableData.splice(i, 1);
+
+    const mainTable = this.elem.querySelector('#main-table');
+    const rowToDelete = mainTable.querySelector(`input[value="${i}"]`).parentNode;
+
+    mainTable.removeChild(rowToDelete);
+
+    //selectedTableRow = null;
   }
 
   highlightTableRow(node) {
