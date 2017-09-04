@@ -1,0 +1,72 @@
+.table-controllers {
+
+  .table-controllers-buttons {
+    position: fixed;
+    top:0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background-color: #fff;
+    border-bottom: 2px solid black;
+
+    button {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid rgb(55, 71, 79);
+      background-color: transparent;
+      cursor: pointer;
+      transition: .125s linear;
+
+      &:not(:first-child) {
+        margin-left: 5px;
+      }
+      &:not(:last-child) {
+        margin-right: 5px;
+      }
+
+      &:hover {
+        border-color: #78a2f6;
+        background-color: rgba(100,162,246,0.31);
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .main-table {
+    display: table;
+    margin-top: 80px;
+    margin-left:0px;
+
+    .table-row {
+      display: table-row;
+      transition: .125s linear;
+
+      .table-cell {
+        display: table-cell;
+        min-width: 85px;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid black;
+
+        &:focus {
+          outline: none;
+          //border:1px solid rgba(246,0,66,0.51);
+        }
+      }
+
+      .table-header {
+        cursor: pointer;
+        background-color: #f6f6f6;
+        color: #000;
+      }
+
+    }
+
+    .table-row.selected {
+      background-color: rgba(100,162,246,0.31);
+    }
+  }
+}

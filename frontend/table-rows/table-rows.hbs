@@ -1,0 +1,10 @@
+{{#each people}}
+
+    <div class="table-row table-row-data">
+        <input type="hidden" name="id" value="{{id}}">
+        <div class="table-cell table-cell-data table-cell-name" data-field="name" contenteditable>{{name}}</div>
+        <div class="table-cell table-cell-data table-cell-age" data-field="age" contenteditable>{{age}}</div>
+        <div class="table-cell table-cell-data table-cell-city" data-field="city" contenteditable>{{city}}</div>
+    </div>
+
+{{/each}}
